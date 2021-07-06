@@ -15,7 +15,7 @@ const ListItem = (props: ListItemProps) => {
           <Text style={styles.shadowText}>{props.symbol.toUpperCase()}</Text>
         </View>
         <Text style={styles.text}>
-          {props.price}
+          {props.price < 2 ? props.price.toFixed(3) : props.price.toFixed(2)}
           {props.currency}
         </Text>
       </View>
