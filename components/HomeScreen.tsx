@@ -1,9 +1,7 @@
-import {NavigationRouteContext} from '@react-navigation/native';
 import * as React from 'react';
 import {useEffect} from 'react';
-import {Text, useWindowDimensions, View} from 'react-native';
+import {Text, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import ListItem from './ListItem';
 
 const HomeScreen = ({navigation}: {navigation: Navigation}) => {
@@ -12,7 +10,7 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
     React.Dispatch<React.SetStateAction<CoinCapInfo[]>>,
   ] = React.useState(new Array());
 
-  const fetchAllCoins = async (currency: string): Promise<CoinCapInfo[]> => {
+  const fetchAllCoins = async (): Promise<CoinCapInfo[]> => {
     const api = 'https://api.coincap.io/v2/assets';
 
     try {
@@ -38,14 +36,13 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
         name={item.name}
         symbol={sym}
         price={Number(item.priceUsd)}
-        currency="$"
         onPress={(id, name) => openInfoScreen(id, name)}
       />
     );
   };
 
   useEffect(() => {
-    fetchAllCoins('usd').then(res => {
+    fetchAllCoins().then(res => {
       setData(res);
     });
   }, []);

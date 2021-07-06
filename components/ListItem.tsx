@@ -16,8 +16,7 @@ const ListItem = (props: ListItemProps) => {
           <Text style={styles.shadowText}>{props.symbol.toUpperCase()}</Text>
         </View>
         <Text style={styles.text}>
-          {props.price < 2 ? props.price.toFixed(3) : props.price.toFixed(2)}
-          {props.currency}
+          ${props.price < 2 ? props.price.toFixed(3) : props.price.toFixed(2)}
         </Text>
       </View>
     </Pressable>
@@ -29,7 +28,6 @@ interface ListItemProps {
   name: string;
   symbol: string;
   price: number;
-  currency: string;
   onPress: (id: string, name: string) => void;
 }
 

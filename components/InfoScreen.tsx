@@ -4,7 +4,7 @@ import {useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {CoinCapInfo} from './HomeScreen';
 
-const InfoScreen = ({route, navigation}: InfoScreenProps) => {
+const InfoScreen = ({route}: InfoScreenProps) => {
   const [info, setInfo]: [[CoinCapInfo | null, number], any] = useState([
     null,
     0,
@@ -111,7 +111,6 @@ const InfoScreen = ({route, navigation}: InfoScreenProps) => {
 
 interface InfoScreenProps {
   route: {params: {id: string; name: string}};
-  navigation: {};
 }
 
 export default InfoScreen;
