@@ -6,6 +6,7 @@ import CryptocurrencyIcon from 'react-native-cryptocurrency-hexagon-icons';
 const ListItem = (props: ListItemProps) => {
   return (
     <Pressable
+      onPress={() => props.onPress(props.id, props.name)}
       style={styles.paddedContainer}
       android_ripple={{color: '#ccc', borderless: false}}>
       <CryptocurrencyIcon name={props.symbol} style={styles.icon} />
@@ -29,6 +30,7 @@ interface ListItemProps {
   symbol: string;
   price: number;
   currency: string;
+  onPress: (id: string, name: string) => void;
 }
 
 export default ListItem;
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    height: 72,
+    height: 64,
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'space-between',
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#333',
   },
 
