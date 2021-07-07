@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: 1,
-    borderColor: '#ccc',
-    borderBottomWidth: StyleSheet.hairlineWidth * 2,
+    borderColor: '#eff2f5',
+    borderBottomWidth: StyleSheet.hairlineWidth * 3,
     paddingRight: 24,
   },
 
@@ -65,6 +65,6 @@ const styles = StyleSheet.create({
   },
 
   shadowText: {
-    color: '#888',
+    color: '#58667e',
   },
 });

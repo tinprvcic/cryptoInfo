@@ -1,14 +1,32 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {useEffect} from 'react';
 import {Text, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import ListItem from './ListItem';
+import SortChooser from './SortChooser';
 
 const HomeScreen = ({navigation}: {navigation: Navigation}) => {
   const [data, setData]: [
     CoinCapInfo[],
     React.Dispatch<React.SetStateAction<CoinCapInfo[]>>,
   ] = React.useState(new Array());
+
+  const [sortIndex, setSortIndex] = useState(0);
+  const availableSorts = ['popularity', 'value', 'alphabetical'];
+  const sortLut = [
+    (a: CoinCapInfo, b: CoinCapInfo) => Number(a.rank) > Number(b.rank),
+    (a: CoinCapInfo, b: CoinCapInfo) => Number(a.priceUsd) < Number(b.priceUsd),
+    (a: CoinCapInfo, b: CoinCapInfo) => a.name > b.name,
+  ];
+
+  const updateSort = () => {
+    const newSortIndex =
+      sortIndex < availableSorts.length - 1 ? sortIndex + 1 : 0;
+    setSortIndex(newSortIndex);
+
+    return availableSorts[newSortIndex];
+  };
 
   const fetchAllCoins = async (): Promise<CoinCapInfo[]> => {
     const api = 'https://api.coincap.io/v2/assets';
@@ -17,7 +35,9 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
       const res = await fetch(api);
       const json = await res.json();
 
-      return json.data.slice(0, 7);
+      return json.data
+        .slice(0, 20)
+        .sort((a: CoinCapInfo, b: CoinCapInfo) => sortLut[sortIndex](a, b));
     } catch {
       console.error('an error occured');
       return [];
@@ -45,10 +65,11 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
     fetchAllCoins().then(res => {
       setData(res);
     });
-  }, []);
+  }, [sortIndex]); // updateSort() could just sort current state; but this fetches refreshed data aswell
 
   return data.length ? (
     <View style={{backgroundColor: '#fff', flex: 1}}>
+      <SortChooser onPress={() => updateSort()} />
       <FlatList
         keyExtractor={item => item.id}
         data={data}
