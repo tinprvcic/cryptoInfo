@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-//@ts-ignore
-import CryptocurrencyIcon from 'react-native-cryptocurrency-hexagon-icons';
+// @ts-ignore
+import CoinIcon from 'react-coin-icon';
 
 const ListItem = (props: ListItemProps) => {
   return (
@@ -9,7 +9,7 @@ const ListItem = (props: ListItemProps) => {
       onPress={() => props.onPress(props.id, props.name)}
       style={styles.paddedContainer}
       android_ripple={{color: '#ccc', borderless: false}}>
-      <CryptocurrencyIcon name={props.symbol} style={styles.icon} />
+      <CoinIcon symbol={props.symbol} style={styles.icon} />
       <View style={styles.container}>
         <View>
           <Text style={styles.text}>{props.name}</Text>
