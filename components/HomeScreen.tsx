@@ -53,14 +53,16 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
     return availableSorts[newSortIndex];
   };
 
-  const fetchAllCoins = async (): Promise<CoinCapInfo[]> => {
+  const fetchAllCoins = async (
+    sortingIndex: number,
+  ): Promise<CoinCapInfo[]> => {
     const api = 'https://api.coincap.io/v2/assets';
 
     try {
       const res = await fetch(api);
       const json = await res.json();
 
-      return json.data.slice(0, 20).sort(sortLut[sortIndex]);
+      return json.data.slice(0, 20).sort(sortLut[sortingIndex]);
     } catch {
       console.error('an error occured');
       return [];
@@ -85,12 +87,10 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
   };
 
   useEffect(() => {
-    getSortStore()
-      .then(val => setSortIndex(val))
-      .then(() => fetchAllCoins())
-      .then(res => {
-        setData(res);
-      });
+    getSortStore().then(val => {
+      setSortIndex(val);
+      fetchAllCoins(val).then(res => setData(res));
+    });
   }, []);
 
   return data.length ? (

@@ -7,9 +7,7 @@ interface SortChooserProps {
   currentSort: string;
 }
 
-const SortChooser: React.FunctionComponent<SortChooserProps> = (
-  props: SortChooserProps,
-) => {
+const SortChooser = (props: SortChooserProps) => {
   return (
     <Pressable
       android_ripple={{color: '#ccc', borderless: false}}
