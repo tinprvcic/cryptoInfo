@@ -5,6 +5,27 @@ import {Text, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import ListItem from './ListItem';
 import SortChooser from './SortChooser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getSortStore = async () => {
+  try {
+    const value = await AsyncStorage.getItem('@storage_Key');
+
+    if (value !== null) return Number(value);
+    return 0;
+  } catch (e) {
+    console.error('an error occured.');
+    return 0;
+  }
+};
+
+const setSortStore = async (val: number) => {
+  try {
+    await AsyncStorage.setItem('@storage_Key', val.toString());
+  } catch (e) {
+    console.error('an error occured.');
+  }
+};
 
 const HomeScreen = ({navigation}: {navigation: Navigation}) => {
   const [data, setData]: [
@@ -15,15 +36,19 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
   const [sortIndex, setSortIndex] = useState(0);
   const availableSorts = ['popularity', 'value', 'alphabetical'];
   const sortLut = [
-    (a: CoinCapInfo, b: CoinCapInfo) => Number(a.rank) > Number(b.rank),
-    (a: CoinCapInfo, b: CoinCapInfo) => Number(a.priceUsd) < Number(b.priceUsd),
-    (a: CoinCapInfo, b: CoinCapInfo) => a.name > b.name,
+    (a: CoinCapInfo, b: CoinCapInfo) => Number(a.rank) - Number(b.rank),
+    (a: CoinCapInfo, b: CoinCapInfo) => Number(b.priceUsd) - Number(a.priceUsd),
+    (a: CoinCapInfo, b: CoinCapInfo) => a.name.localeCompare(b.name),
   ];
 
   const updateSort = () => {
     const newSortIndex =
       sortIndex < availableSorts.length - 1 ? sortIndex + 1 : 0;
+
     setSortIndex(newSortIndex);
+    setSortStore(newSortIndex);
+
+    setData(data.sort(sortLut[newSortIndex]));
 
     return availableSorts[newSortIndex];
   };
@@ -35,9 +60,7 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
       const res = await fetch(api);
       const json = await res.json();
 
-      return json.data
-        .slice(0, 20)
-        .sort((a: CoinCapInfo, b: CoinCapInfo) => sortLut[sortIndex](a, b));
+      return json.data.slice(0, 20).sort(sortLut[sortIndex]);
     } catch {
       console.error('an error occured');
       return [];
@@ -62,14 +85,20 @@ const HomeScreen = ({navigation}: {navigation: Navigation}) => {
   };
 
   useEffect(() => {
-    fetchAllCoins().then(res => {
-      setData(res);
-    });
-  }, [sortIndex]); // updateSort() could just sort current state; but this fetches refreshed data aswell
+    getSortStore()
+      .then(val => setSortIndex(val))
+      .then(() => fetchAllCoins())
+      .then(res => {
+        setData(res);
+      });
+  }, []);
 
   return data.length ? (
     <View style={{backgroundColor: '#fff', flex: 1}}>
-      <SortChooser onPress={() => updateSort()} />
+      <SortChooser
+        onPress={() => updateSort()}
+        currentSort={availableSorts[sortIndex]}
+      />
       <FlatList
         keyExtractor={item => item.id}
         data={data}

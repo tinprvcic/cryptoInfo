@@ -1,23 +1,23 @@
 import * as React from 'react';
-import {useState} from 'react';
 import {Pressable, StyleSheet, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface SortChooserProps {
-  onPress: () => string;
+  onPress: () => void;
+  currentSort: string;
 }
 
 const SortChooser: React.FunctionComponent<SortChooserProps> = (
   props: SortChooserProps,
 ) => {
-  const [sort, setSort] = useState('popularity');
-
   return (
     <Pressable
       android_ripple={{color: '#ccc', borderless: false}}
       style={styles.container}
-      onPress={() => setSort(props.onPress())}>
-      <Text style={styles.text}>SORT BY: {sort.toUpperCase()}</Text>
+      onPress={() => props.onPress()}>
+      <Text style={styles.text}>
+        SORT BY: {props.currentSort.toUpperCase()}
+      </Text>
       <Icon name="sort" style={styles.icon} />
     </Pressable>
   );
